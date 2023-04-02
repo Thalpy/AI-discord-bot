@@ -1,7 +1,12 @@
-import os
 import openai
 import discord
 from discord.ext import commands
+
+
+# SET VARIABLES HERE
+bot_name = "Kongou"
+bot_source = "Kancolle"
+bot_mood = "happy"
 
 # GPT MODEL SETUP
 
@@ -18,13 +23,12 @@ model = GPT2LMHeadModel.from_pretrained("gpt2")
 
 # generator = pipeline('text-generation', model='EleutherAI/gpt-j-6B', device=0)
 
-# OpenAI GPT-4
-
-# get the openai api key from the openai api key file
-with open("openai_token.txt", "r") as f:
-    openai.api_key = f.read()
-
 # END GPT MODEL SETUP
+
+# Memory
+chat_history = []
+max_history_len = 10
+setup_chat = []
 
 # Set up Discord bot
 intents = discord.Intents.default()
@@ -36,12 +40,13 @@ tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 model = GPT2LMHeadModel.from_pretrained("gpt2")
 
 def generate_kongou_response_gptj(prompt):
+    # in progress
     response = generator(prompt, max_length=1000, do_sample=True, temperature=0.7)
 
     return response
 
 def generate_kongou_response_gpt2(prompt):
-    full_prompt = f"Respond to the following message as if you were Kongou from Kancolle in a seductive mood: {prompt}"
+    full_prompt = f"Respond to the following message as if you were {bot_name} from {bot_source}: {prompt}"
     input_ids = tokenizer.encode(full_prompt, return_tensors="pt")
     output = model.generate(input_ids, max_length=100, num_return_sequences=1, temperature=0.7)
     response = tokenizer.decode(output[0], skip_special_tokens=True)
@@ -50,16 +55,6 @@ def generate_kongou_response_gpt2(prompt):
     print(response)
     return response.strip()
 
-def generate_kongou_response_openai_gpt4(prompt):
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=f"Respond to the following message as if you were Kongou from Kancolle in a seductive mood: {prompt}",
-        max_tokens=100,
-        n=1,
-        stop=None,
-        temperature=0.7,
-    )
-    return response.choices[0].text.strip()
 
 @bot.event
 async def on_message(message):
@@ -69,7 +64,7 @@ async def on_message(message):
     # Check if the bot is mentioned in the message
     if bot.user in message.mentions:
         prompt = message.content.replace(f"<@!{bot.user.id}>", "").strip()
-        kongou_response = generate_kongou_response_openai_gpt4(prompt)
+        kongou_response = generate_kongou_response_openai_gpt2(prompt)
         await message.channel.send(kongou_response)
 
     await bot.process_commands(message)
