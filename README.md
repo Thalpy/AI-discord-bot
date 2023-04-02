@@ -1,7 +1,7 @@
 # DISCORD CHARACTER BOT
 This code will spin up a discord bot that will chat with you as your chosen character when mentioned in a message.
 
-This presently only works with OpenAI's GPT-3 API.  You will need to sign up for an account and get an API key. I'm working on free solutions but I might be slow. **This will charge you if you openai.** I'm not responsible for any charges you get. 
+This presently only works with OpenAI's API.  You will need to sign up for an account and get an API key. I'm working on free solutions but I might be slow. **This will charge you if you openai.** I'm not responsible for any charges you get. 
 
 ## Setup
 
